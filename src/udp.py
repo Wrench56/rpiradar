@@ -3,6 +3,7 @@
 from typing import Any, Tuple
 
 import socket
+import time
 
 RECV_SIZE = 1024
 
@@ -29,7 +30,7 @@ def send_broadcast(ip: str, port: int, message: str) -> None:
 
 
 def receive_broadcast(port: int) -> Tuple[str, Tuple[Any]]:
-    '''Receive UDP packets sent to a broadcast group in a non-blocking way'''
+    '''Receive UDP packets sent to a broadcast group in a blocking way'''
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
@@ -38,6 +39,24 @@ def receive_broadcast(port: int) -> Tuple[str, Tuple[Any]]:
 
     while True:
         try:
+            data, addr = sock.recvfrom(RECV_SIZE)
+            if data != '':
+                return (data.decode(), addr,)
+        except BlockingIOError:
+            pass
+
+
+def send_until_receive(ip: str, port: int, msg: str, wait: float = 0.1) -> Tuple[str, Tuple[Any]]:
+    '''Send a message until you receive a response'''
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+    sock.bind(('', port))
+    sock.setblocking(False)
+
+    while True:
+        try:
+            send_broadcast(ip, port, msg)
             data, addr = sock.recvfrom(RECV_SIZE)
             if data != '':
                 return (data.decode(), addr,)
