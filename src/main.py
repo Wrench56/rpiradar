@@ -31,7 +31,7 @@ def main() -> None:
             print('[*] Receiving hostnames:')
             recv_ips = set()
             while True:
-                msg, addr = udp.send_until_receive(BROADCAST_IP, PORT, 'WKE', wait=0.01)
+                msg, addr = udp.send_until_receive(BROADCAST_IP, PORT, 'WKE')
                 if msg[0:3] == 'BDC':
                     hostname = msg[3:].strip()
                     if addr[0] in recv_ips:
@@ -57,7 +57,7 @@ def _handle_interrupt():
 def _broadcast_hostname(hostname: str) -> bool:
     print(f'[*] Sending broadcast data to group {BROADCAST_IP}:{PORT}...')
     while True:
-        msg, _ = udp.send_until_receive(BROADCAST_IP, PORT, f'BDC {hostname}', wait=0.1)
+        msg, _ = udp.send_until_receive(BROADCAST_IP, PORT, f'BDC {hostname}')
         if msg == f'ACK @{hostname}':
             print('[*] Verfied!')
             return True
