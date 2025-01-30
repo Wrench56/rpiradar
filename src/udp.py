@@ -3,7 +3,6 @@
 from typing import Any, Tuple
 
 import socket
-import time
 
 RECV_SIZE = 1024
 
@@ -46,7 +45,7 @@ def receive_broadcast(port: int) -> Tuple[str, Tuple[Any]]:
             pass
 
 
-def send_until_receive(ip: str, port: int, msg: str, wait: float = 0.1) -> Tuple[str, Tuple[Any]]:
+def send_until_receive(ip: str, port: int, msg: str) -> Tuple[str, Tuple[Any]]:
     '''Send a message until you receive a response'''
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
