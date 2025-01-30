@@ -3,3 +3,6 @@ playground
 
 # Ignore commitlint executable
 tools/commitlint.*
+
+# Ignore __pycache__
+**/__pycache__
